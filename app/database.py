@@ -12,7 +12,7 @@ def get_connection():
     conn.row_factory = sqlite3.Row
     return conn
 
-def init_db():
+def initialize_db():
     """
     Creates the table if it doesn't already exist.
     """
