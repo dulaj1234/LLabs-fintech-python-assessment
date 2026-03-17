@@ -17,20 +17,17 @@ async def get_monthly_mkt_data(symbol: str) -> dict:
     """
     Calls the AlphaVantage API and return all monthly data for given symbol as a data set.
     """
+    # create params for the URL
+    params = {
+        "function": "TIME_SERISE_MONTHLY",
+        "symbol": symbol.upper(),
+        "apikey": API_KEY
+    }
 
-# create params for the URL
-params = {
-    "function": "TIME_SERISE_MONTHLY",
-    "symbol": symbol.upper(),
-    "apikey": API_KEY
-}
-
-async with httpx.AsyncClient() as client:
-    response = await client.get(BASE_URL, params=params)
-
-    response.raise_for_status()
-
-    data = response.json()
+    async with httpx.AsyncClient() as client:
+        response = await client.get(BASE_URL, params=params)
+        response.raise_for_status()
+        data = response.json()
 
     if "Error Message" in data:
         raise ValueError(f"Invalid Symbol '{symbol}': {data['Error Message']}")
