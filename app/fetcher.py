@@ -46,9 +46,8 @@ def filter_data_by_year(monthly_time_series: dict, year: str) -> dict:
     """
     AlphaVantage returns all historical data for the given symbol.
     """
-
     filtered = {
-        data: values
+        date: values
         for date, values in monthly_time_series.items()
         if date.startswith(year)
     }

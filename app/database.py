@@ -32,3 +32,68 @@ def initialize_db():
 
     conn.commit()
     conn.close()
+
+def insert_monthly_mkt_data(symbol: str, monthly_data: dict):
+    """
+    Insertss all monthly market data rows for a symbol into the DB
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    for date, values in monthly_data.items():
+        cursor.execute("""
+            INSERT OR IGNORE INTO monthly_stock_prices (symbol, date, high, low, volume)
+            VALUES (?,?,?,?,?) 
+        """, 
+        (
+            symbol.upper(),
+            date,
+            values["1. high"],
+            values["2. low"],
+            values["3. volume"]                  
+        ))
+
+    conn.commit()
+    conn.close()
+
+def get_annual_mkt_data(symbol: str, year: str):
+    """
+    Returns the list of rows for all the months for a given symbol and year
+    """
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT high, low, volume FROM monthly_stock_prices WHERE symbol = ? AND date like ?
+    """,
+    (
+        symbol.upper(),
+        f"{year}-%"
+    ))
+
+    rows = cursor.fetchall()
+    conn.close()
+    
+    return rows
+
+def is_data_available_for_year(symbol: str, year: str) -> bool:
+    """
+    This returns True or False by checking whether there are already data for the given symbol and year in DB 
+    """
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT COUNT(*) as count FROM monthly_stock_prices WHERE symbol = ? AND date LIKE ?
+    """,
+    (
+        symbol.upper(),
+        f"{year}-%"
+    ))
+
+    row = cursor.fetchone()
+    conn.close()
+
+    return row["count"] > 0
