@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from app.database import insert_monthly_mkt_data, get_annual_mkt_data, is_data_available_for_year
 from app.fetcher import get_monthly_mkt_data, filter_data_by_year
+import httpx
 import datetime
 
 router = APIRouter()
@@ -70,7 +71,7 @@ async def get_annual_data_summary(symbol: str, year: str):
                 detail=str(e)
             )
 
-        except Exception as e:
+        except httpx.HTTPStatusError as e:
             raise HTTPException(
                 status_code=502,
                 detail=f"Failed to fetch data from external API: {str(e)}"
