@@ -1,8 +1,49 @@
 from fastapi import APIRouter, HTTPException
 from app.database import insert_monthly_mkt_data, get_annual_mkt_data, is_data_available_for_year
 from app.fetcher import get_monthly_mkt_data, filter_data_by_year
+import datetime
 
 router = APIRouter()
+
+def input_validations(symbol: str, year: str):
+    """
+    Raises the exceptions immediately when validating the symbol and year
+    """
+
+    #validate symbol
+    if not symbol or not symbol.isalpha():
+        raise HTTPException(
+            status_code=400,
+            detail="Symbol must contain letters only like 'AAPL', 'IBM'."
+        )
+    
+    if len(symbol) > 4:
+        raise HTTPException(
+            status_code=400,
+            detail="Symbol is too long. Max: 4 characters."
+        )
+    
+    #validate year
+    if not year.isdigit() or len(year) != 4:
+        raise HTTPException(
+            status_code=400,
+            detail="Year must be a 4 digit number like 2005, 2010, 2022."
+        )
+    
+    current_year = datetime.now().year
+    year_int = int(year)
+
+    if year_int > current_year:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Future year cannot be checked. Current year is {current_year}."
+        )
+    
+    if year_int < 1900:
+        raise HTTPException(
+            status_code=400,
+            detail="Year must be 1900 or later. No data exists before that."
+        )
 
 @router.get("/symbols/{symbol}/annual/{year}")
 async def get_annual_data_summary(symbol: str, year: str):
@@ -11,12 +52,8 @@ async def get_annual_data_summary(symbol: str, year: str):
     for a given stock symbol and year.
     """
 
-    # Validate the year format
-    if not year.isdigit() or len(year) != 4:
-        raise HTTPException(
-            status_code=400,
-            detail="Year must be a 4 digit number like 2005, 2010, 2022..."
-        )
+    #Input validations
+    input_validations(symbol, year)
 
     # Check if data exists in the db
     if not is_data_available_for_year(symbol, year):
@@ -28,12 +65,27 @@ async def get_annual_data_summary(symbol: str, year: str):
             insert_monthly_mkt_data(symbol, filtered)
 
         except ValueError as e:
-            raise HTTPException(status_code=404, detail=str(e))
+            raise HTTPException(
+                status_code=404, 
+                detail=str(e)
+            )
 
         except Exception as e:
             raise HTTPException(
                 status_code=502,
                 detail=f"Failed to fetch data from external API: {str(e)}"
+            )
+        
+        except httpx.RequestError as e:
+            raise HTTPException(
+                status_code=503,
+                detail=f"Couldn't reach the API due to connection lost."
+            )
+        
+        except Exception as e:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Unexpected error occured: {str(e)}"
             )
 
     # Query the database and aggregate
@@ -46,9 +98,16 @@ async def get_annual_data_summary(symbol: str, year: str):
         )
 
     # Calculate high, low and total volume
-    highest = max(float(row["high"]) for row in rows)
-    lowest = min(float(row["low"]) for row in rows)
-    total_volume = sum(int(row["volume"]) for row in rows)
+    try:
+        highest = max(float(row["high"]) for row in rows)
+        lowest = min(float(row["low"]) for row in rows)
+        total_volume = sum(int(row["volume"]) for row in rows)
+
+    except (ValueError, TypeError) as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error while processing data: {str(e)}"
+        )    
 
     return {
         "high": f"{highest:.4f}",

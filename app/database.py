@@ -48,9 +48,9 @@ def insert_monthly_mkt_data(symbol: str, monthly_data: dict):
         (
             symbol.upper(),
             date,
-            values["1. high"],
-            values["2. low"],
-            values["3. volume"]                  
+            values["2. high"],
+            values["3. low"],
+            values["5. volume"]                  
         ))
 
     conn.commit()

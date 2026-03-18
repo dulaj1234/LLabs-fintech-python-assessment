@@ -19,7 +19,7 @@ async def get_monthly_mkt_data(symbol: str) -> dict:
     """
     # create params for the URL
     params = {
-        "function": "TIME_SERISE_MONTHLY",
+        "function": "TIME_SERIES_MONTHLY",
         "symbol": symbol.upper(),
         "apikey": API_KEY
     }
