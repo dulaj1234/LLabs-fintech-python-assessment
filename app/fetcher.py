@@ -13,6 +13,16 @@ API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
 # The base URL for AlphaVantage read from .env file
 BASE_URL = os.getenv("ALPHAVANTAGE_API_URL")
 
+if not API_KEY:
+    raise RuntimeError(
+        "'ALPHAVANTAGE_API_KEY' is not set, add it to .env."
+    )
+
+if not BASE_URL:
+    raise RuntimeWarning(
+        "Add 'ALPHAVANTAGE_API_URL' to .env."
+    )
+
 async def get_monthly_mkt_data(symbol: str) -> dict:
     """
     Calls the AlphaVantage API and return all monthly data for given symbol as a data set.
