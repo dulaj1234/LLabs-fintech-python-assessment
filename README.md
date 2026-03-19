@@ -27,7 +27,7 @@ cd LLabs-fintech-python-assessment
 
 ## Environment Setup
 
-### 1 — Create a Virtual Environment
+### 1. Create a Virtual Environment
 
 **Windows:**
 ```bash
@@ -46,12 +46,12 @@ source venv/bin/activate
 
 To confirm the virtual eviroment is active, `(venv)` appear at the start of the terminal line.
 
-### 2 — Install Dependencies
+### 2. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3 — Configure Environment Variables
+### 3. Configure Environment Variables
 
 Create a `.env` file in the root directory of the project:
 
@@ -76,3 +76,24 @@ ALPHAVANTAGE_API_KEY=api_key
 > to ALPHAVANTAGE_API_URL. 
 
 > No need of sharing or committing the `.env` file.
+
+## Database Setup
+
+The SQLite database is created **automatically** when the
+application starts. No manual database setup is required.
+
+The database file `market_data.db` will be created in the
+root directory of the project on first run.
+
+The following table will be created automatically:
+```sql
+CREATE TABLE IF NOT EXISTS monthly_prices (
+    symbol  TEXT NOT NULL,
+    date    TEXT NOT NULL,
+    open    TEXT,
+    high    TEXT NOT NULL,
+    low     TEXT NOT NULL,
+    volume  TEXT NOT NULL,
+    PRIMARY KEY (symbol, date)
+);
+```
