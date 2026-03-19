@@ -1,5 +1,6 @@
 import sqlite3
 import os
+import datetime
 
 # DB file creation path
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "market_data.db")
@@ -35,30 +36,58 @@ def initialize_db():
 
 def insert_monthly_mkt_data(symbol: str, monthly_data: dict):
     """
-    Insertss all monthly market data rows for a symbol into the DB
+    Inserts all monthly market data rows for a symbol into the DB
     """
     conn = get_connection()
     cursor = conn.cursor()
 
+    current_year = str(datetime.date.today().year)
+
     for date, values in monthly_data.items():
-        cursor.execute("""
-            INSERT OR IGNORE INTO monthly_stock_prices (symbol, date, high, low, volume)
-            VALUES (?,?,?,?,?) 
-        """, 
-        (
-            symbol.upper(),
-            date,
-            values["2. high"],
-            values["3. low"],
-            values["5. volume"]                  
-        ))
+
+        if date.startswith(current_year):
+            # Current year — UPSERT
+            # Update if exists, insert if not
+            cursor.execute("""
+                INSERT INTO monthly_stock_prices
+                    (symbol, date, high, low, volume)
+                VALUES (?, ?, ?, ?, ?)
+                ON CONFLICT(symbol, date)
+                DO UPDATE SET
+                    high   = excluded.high,
+                    low    = excluded.low,
+                    volume = excluded.volume
+            """,
+            (
+                symbol.upper(),
+                date,
+                values["2. high"],
+                values["3. low"],
+                values["5. volume"]
+            ))
+
+        else:
+            # Past year — INSERT OR IGNORE
+            # Never overwrite historical data
+            cursor.execute("""
+                INSERT OR IGNORE INTO monthly_stock_prices
+                    (symbol, date, high, low, volume)
+                VALUES (?, ?, ?, ?, ?)
+            """,
+            (
+                symbol.upper(),
+                date,
+                values["2. high"],
+                values["3. low"],
+                values["5. volume"]
+            ))
 
     conn.commit()
     conn.close()
 
 def get_annual_mkt_data(symbol: str, year: str):
     """
-    Returns the list of rows for all the months for a given symbol and year
+    Returns the array of annual data for a given symbol and year in [high, low, volumn] format
     """
 
     conn = get_connection()
@@ -75,9 +104,11 @@ def get_annual_mkt_data(symbol: str, year: str):
     rows = cursor.fetchall()
     conn.close()
     
-    return rows
+    return [max(float(row["high"]) for row in rows), 
+            min(float(row["low"]) for row in rows),
+            sum(int(row["volume"]) for row in rows)]
 
-def is_data_available_for_year(symbol: str, year: str) -> bool:
+def is_data_available(symbol: str, year: str) -> bool:
     """
     This returns True or False by checking whether there are already data for the given symbol and year in DB 
     """
