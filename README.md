@@ -22,4 +22,6 @@ You will also need a free AlphaVantage API key:
 Open your terminal and run the following commands:
 
 git clone https://github.com/dulaj1234/LLabs-fintech-python-assessment.git
+```
 cd LLabs-fintech-python-assessment
+```
