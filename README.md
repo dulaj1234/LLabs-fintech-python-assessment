@@ -156,7 +156,7 @@ http://127.0.0.1:8000/symbols/IBM/annual/2005
 #### Error Responses
 
 | Error Code | Reason |
-|---|---|---|
+|---|---|
 | `400` | Invalid symbol format |
 | `400` | Invalid year format |
 | `400` | Year in the future |
@@ -174,3 +174,16 @@ http://127.0.0.1:8000/symbols/IBM/annual/2005
 }
 > This is for error code  `400` - Year in the future
 ```
+
+## Libraries Used
+
+| Library | Version | Rationale |
+|---|---|---|
+| **fastapi** | Latest | Required by assignment. Modern async-native REST framework with automatic documentation generation |
+| **uvicorn** | Latest | ASGI server required to run FastAPI applications |
+| **httpx** | Latest | Async HTTP client that works natively with FastAPI's async architecture. Preferred over `requests` which is synchronous only |
+| **python-dotenv** | Latest | Safely loads the API key from `.env` file keeping secrets out of source code |
+| **pytest** | Latest | Industry standard Python testing framework |
+| **pytest-asyncio** | Latest | Enables pytest to handle async functions used throughout the FastAPI application |
+
+> SQLite is used via Python's built-in `sqlite3` module, no additional installation required.
