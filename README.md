@@ -146,9 +146,31 @@ volume for a given stock symbol or the given year.
 
 #### Example Request
 ```bash
-curl -X GET "http://127.0.0.1:8000/symbols/IBM/annual/2005"
+GET "http://127.0.0.1:8000/symbols/IBM/annual/2005"
 ```
 
 Or simply open this URL in your browser:
 ```
 http://127.0.0.1:8000/symbols/IBM/annual/2005
+
+#### Error Responses
+
+| Error Code | Reason |
+|---|---|---|
+| `400` | Invalid symbol format |
+| `400` | Invalid year format |
+| `400` | Year in the future |
+| `400` | Year too old |
+| `404` | Symbol not found |
+| `404` | No data for year |
+| `500` | Internal server error |
+| `502` | External API error |
+| `503` | Cannot reach API |
+
+#### Example Error Response
+```json
+{
+  "detail": "Year cannot be in the future. Current year is 2026."
+}
+> This is for error code  `400` - Year in the future
+```
