@@ -87,7 +87,7 @@ root directory of the project on first run.
 
 The following table will be created automatically:
 ```sql
-CREATE TABLE IF NOT EXISTS monthly_prices (
+CREATE TABLE IF NOT EXISTS monthly_stock_prices (
     symbol  TEXT NOT NULL,
     date    TEXT NOT NULL,
     open    TEXT,
@@ -96,4 +96,25 @@ CREATE TABLE IF NOT EXISTS monthly_prices (
     volume  TEXT NOT NULL,
     PRIMARY KEY (symbol, date)
 );
+```
+
+## Run the Application
+
+### Development Mode
+The following command reloads automatically
+
+```bash
+uvicorn app.main:app --reload
+```
+
+
+Once running, you will see the following output:
+```
+>    Uvicorn running on http://127.0.0.1:8000
+>    Application startup complete.
+```
+
+The API is now up at:
+```
+http://127.0.0.1:8000
 ```
