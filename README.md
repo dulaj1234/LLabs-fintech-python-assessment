@@ -118,3 +118,37 @@ The API is now up at:
 ```
 http://127.0.0.1:8000
 ```
+
+### API Documentation
+
+Since FastAPI automatically generates interactive documentation.
+Open the browser and go to:
+```
+http://127.0.0.1:8000/docs
+```
+
+You can test all endpoints directly from this page
+without needing any extra tools.
+
+## API Endpoint
+
+### `GET /symbols/{symbol}/annual/{year}`
+
+Returns the highest price, lowest price and total trading
+volume for a given stock symbol or the given year.
+
+#### URL Parameters
+
+| Parameter | Type | Required | Description |
+|---|---|---|---|
+| `symbol` | string | Yes | Stock symbol/code like `IBM`, `AAPL`, `MSFT` |
+| `year` | string | Yes | 4 digit year like `2005`. Must be 1900 or later. |
+
+#### Example Request
+```bash
+curl -X GET "http://127.0.0.1:8000/symbols/IBM/annual/2005"
+```
+
+Or simply open this URL in your browser:
+```
+http://127.0.0.1:8000/symbols/IBM/annual/2005
