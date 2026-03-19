@@ -9,10 +9,17 @@ Before you begin, ensure you have the following installed on your machine:
 
 | Tool | Version | Download |
 |---|---|---|
-| Python | 3.12+ | https://www.python.org/downloads/ |
+| Python | 3.14+ | https://www.python.org/downloads/ |
 | Git | Latest | https://git-scm.com/downloads |
 
 You will also need a free AlphaVantage API key:
 1. Go to https://www.alphavantage.co/support/#api-key
 2. Fill in your details and select **"Student"** as your role
-3. Your API key will be displayed on screen — copy and save it
+3. The API key will be displayed on the screen, copy and save it
+
+## Clone the Repository
+
+Open your terminal and run the following commands:
+
+git clone https://github.com/dulaj1234/LLabs-fintech-python-assessment.git
+cd LLabs-fintech-python-assessment
