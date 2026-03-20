@@ -152,6 +152,7 @@ GET "http://127.0.0.1:8000/symbols/IBM/annual/2005"
 Or simply open this URL in your browser:
 ```
 http://127.0.0.1:8000/symbols/IBM/annual/2005
+```
 
 #### Error Responses
 
