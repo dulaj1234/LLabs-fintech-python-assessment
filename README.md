@@ -155,7 +155,7 @@ http://127.0.0.1:8000/symbols/IBM/annual/2005
 
 #### Error Responses
 
-| Error_Code | Reason |
+| ErrorCode | Reason |
 |---|---|
 | `400` | Invalid symbol format |
 | `400` | Invalid year format |
