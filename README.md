@@ -65,7 +65,7 @@ copy NUL .env
 touch .env
 ```
 
-Open the `.env` file and add your AlphaVantage API key:
+Open the `.env` file and add your AlphaVantage API key and URL:
 ```
 ALPHAVANTAGE_API_URL=https://www.alphavantage.co/query
 ALPHAVANTAGE_API_KEY=api_key
@@ -155,7 +155,7 @@ http://127.0.0.1:8000/symbols/IBM/annual/2005
 
 #### Error Responses
 
-| Error Code | Reason |
+| Error_Code | Reason |
 |---|---|
 | `400` | Invalid symbol format |
 | `400` | Invalid year format |
