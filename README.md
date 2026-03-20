@@ -11,6 +11,7 @@ Before you begin, ensure you have the following installed on your machine:
 |---|---|---|
 | Python | 3.14+ | https://www.python.org/downloads/ |
 | Git | Latest | https://git-scm.com/downloads |
+| IDE | | **"Prefered IDE"** |
 
 You will also need a free AlphaVantage API key:
 1. Go to https://www.alphavantage.co/support/#api-key
@@ -19,12 +20,13 @@ You will also need a free AlphaVantage API key:
 
 ## Clone the Repository
 
-Open your terminal and run the following commands:
+Open your terminal and run the following commands to clone and direct to the cloned folder:
 ```bash
 git clone https://github.com/dulaj1234/LLabs-fintech-python-assessment.git
+```
+```bash
 cd LLabs-fintech-python-assessment
 ```
-
 ## Environment Setup
 
 ### 1. Create a Virtual Environment
@@ -32,12 +34,22 @@ cd LLabs-fintech-python-assessment
 **Windows:**
 ```bash
 python -m venv venv
-source venv/Scripts/activate
 ```
 
 **Linux/MACOS:**
 ```bash
 python3 -m venv venv
+```
+
+### 2. Activate the Virtual Environment
+
+**Windows:**
+```bash
+source venv/Scripts/activate
+```
+
+**Linux/MACOS:**
+```bash
 source venv/bin/activate
 ```
 
@@ -46,12 +58,12 @@ source venv/bin/activate
 
 To confirm the virtual eviroment is active, `(venv)` appear at the start of the terminal line.
 
-### 2. Install Dependencies
+### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Configure Environment Variables
+### 4. Configure Environment Variables
 
 Create a `.env` file in the root directory of the project:
 
@@ -66,7 +78,9 @@ touch .env
 ```
 
 Open the `.env` file and add your AlphaVantage API key and URL:
-```
+```bash
+nano .env
+
 ALPHAVANTAGE_API_URL=https://www.alphavantage.co/query
 ALPHAVANTAGE_API_KEY=api_key
 ```
@@ -90,7 +104,6 @@ The following table will be created automatically:
 CREATE TABLE IF NOT EXISTS monthly_stock_prices (
     symbol  TEXT NOT NULL,
     date    TEXT NOT NULL,
-    open    TEXT,
     high    TEXT NOT NULL,
     low     TEXT NOT NULL,
     volume  TEXT NOT NULL,
@@ -127,7 +140,7 @@ Open the browser and go to:
 http://127.0.0.1:8000/docs
 ```
 
-You can test all endpoints directly from this page
+You can test endpoints directly from this page
 without needing any extra tools.
 
 ## API Endpoint
@@ -146,7 +159,7 @@ volume for a given stock symbol or the given year.
 
 #### Example Request
 ```bash
-GET "http://127.0.0.1:8000/symbols/IBM/annual/2005"
+curl -X GET "http://127.0.0.1:8000/symbols/IBM/annual/2005"
 ```
 
 Or simply open this URL in your browser:
@@ -154,27 +167,23 @@ Or simply open this URL in your browser:
 http://127.0.0.1:8000/symbols/IBM/annual/2005
 ```
 
-#### Error Responses
-
-| ErrorCode | Reason |
-|---|---|
-| `400` | Invalid symbol format |
-| `400` | Invalid year format |
-| `400` | Year in the future |
-| `400` | Year too old |
-| `404` | Symbol not found |
-| `404` | No data for year |
-| `500` | Internal server error |
-| `502` | External API error |
-| `503` | Cannot reach API |
-
-#### Example Error Response
+#### Sample Response
 ```json
 {
-  "detail": "Year cannot be in the future. Current year is 2026."
+  "high": "80.8700",
+  "low": "76.0600",
+  "volume": "139457800"
 }
-> This is for error code  `400` - Year in the future
 ```
+
+#### Response Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `high` | string | Highest price for the symbol within the year |
+| `low` | string | Lowest price for the symbol within the year |
+| `volume` | string | Sum of all monthly trading volumes for the year |
+
 
 ## Libraries Used
 
@@ -188,3 +197,11 @@ http://127.0.0.1:8000/symbols/IBM/annual/2005
 | **pytest-asyncio** | Latest | Enables pytest to handle async functions used throughout the FastAPI application |
 
 > SQLite is used via Python's built-in `sqlite3` module, no additional installation required.
+
+## Usage Notes of API
+
+- AlphaVantage free tier allows **25 requests per day**
+- Once fetched, data is **cached in SQLite permanently** for past years
+- Current year data is **always refreshed** on each request to capture
+  the latest monthly data
+- Subsequent requests for past years use the cache with **no API calls**
