@@ -23,11 +23,11 @@ if not BASE_URL:
         "Add 'ALPHAVANTAGE_API_URL' to .env."
     )
 
-async def get_monthly_mkt_data(symbol: str) -> dict:
+async def fetch_monthly_mkt_data(symbol: str) -> dict:
     """
-    Calls the AlphaVantage API and return all monthly data for given symbol as a data set.
+    Calls the AlphaVantage API and return all monthly data for given symbol as a dictonary.
     """
-    # create params for the URL
+    # create parameters for the URL
     params = {
         "function": "TIME_SERIES_MONTHLY",
         "symbol": symbol.upper(),
@@ -63,7 +63,7 @@ def filter_data_by_year(monthly_time_series: dict, year: str) -> dict:
     }
 
     if not filtered:
-        raise ValueError(f"No data found for the given yeat '{year}'")
+        raise ValueError(f"No data found for the given symbol for the year {year}")
     
     return filtered
     

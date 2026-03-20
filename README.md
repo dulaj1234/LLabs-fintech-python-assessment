@@ -122,10 +122,8 @@ uvicorn app.main:app --reload
 
 
 Once running, you will see the following output:
-```
 >    Uvicorn running on http://127.0.0.1:8000
 >    Application startup complete.
-```
 
 The API is now up at:
 ```
@@ -155,7 +153,7 @@ volume for a given stock symbol or the given year.
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `symbol` | string | Yes | Stock symbol/code like `IBM`, `AAPL`, `MSFT` |
-| `year` | string | Yes | 4 digit year like `2005`. Must be 1900 or later. |
+| `year` | string | Yes | 4 digit year like `2005`. Must be later than 1900. |
 
 #### Example Request
 ```bash
@@ -190,9 +188,9 @@ http://127.0.0.1:8000/symbols/IBM/annual/2005
 | Library | Version | Rationale |
 |---|---|---|
 | **fastapi** | Latest | Required by assignment. Modern async-native REST framework with automatic documentation generation |
-| **uvicorn** | Latest | ASGI server required to run FastAPI applications |
+| **uvicorn** | Latest | ASGI (Asynchronous Server Gateway Interface) server required to run FastAPI applications |
 | **httpx** | Latest | Async HTTP client that works natively with FastAPI's async architecture. Preferred over `requests` which is synchronous only |
-| **python-dotenv** | Latest | Safely loads the API key from `.env` file keeping secrets out of source code |
+| **python-dotenv** | Latest | Safely loads the API key from `.env` file keeping out of source code |
 | **pytest** | Latest | Industry standard Python testing framework |
 | **pytest-asyncio** | Latest | Enables pytest to handle async functions used throughout the FastAPI application |
 

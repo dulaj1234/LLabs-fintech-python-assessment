@@ -15,7 +15,7 @@ def get_connection():
 
 def initialize_db():
     """
-    Creates the table if it doesn't already exist.
+    Creates the table if it doesn't exist.
     """
     conn = get_connection()
     cursor = conn.cursor()
@@ -89,12 +89,11 @@ def get_annual_mkt_data(symbol: str, year: str):
     """
     Returns the array of annual data for a given symbol and year in [high, low, volumn] format
     """
-
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT high, low, volume FROM monthly_stock_prices WHERE symbol = ? AND date like ?
+        SELECT high, low, volume FROM monthly_stock_prices WHERE symbol = ? AND date LIKE ?
     """,
     (
         symbol.upper(),
